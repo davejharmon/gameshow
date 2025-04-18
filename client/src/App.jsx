@@ -4,7 +4,7 @@ import Dashboard from './components/Dashboard';
 import PlayerScreen from './components/PlayerScreen';
 import { useGameSounds } from './hooks/useGameSounds';
 
-const WS_URL = 'ws://localhost:3001';
+const WS_URL = `ws://${window.location.hostname}:3001`;
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);

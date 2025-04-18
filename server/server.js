@@ -1,11 +1,13 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const WebSocket = require('ws');
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// === Game state ===
 let gameState = {
   armed: false,
   firstBuzz: null,
@@ -15,8 +17,17 @@ let gameState = {
   },
 };
 
+// === Serve React frontend from ../client/build ===
+const buildPath = path.join(__dirname, '..', 'client', 'build');
+app.use(express.static(buildPath));
+
+// === Fallback route for SPA (React Router) ===
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
+});
+
+// === WebSocket logic ===
 wss.on('connection', (ws) => {
-  // Send the current game state (including scores) when a new client connects
   ws.send(JSON.stringify({ type: 'scoreUpdate', payload: gameState.scores }));
 
   ws.on('message', (message) => {
@@ -30,7 +41,7 @@ wss.on('connection', (ws) => {
 
     const { type, payload } = data;
 
-    console.log(`Received message: ${type}`, payload); // Debugging log
+    console.log(`Received message: ${type}`, payload);
 
     switch (type) {
       case 'armBuzzers':
@@ -57,7 +68,7 @@ wss.on('connection', (ws) => {
 
       case 'deductPoint':
         if (gameState.scores[payload.player] > 0) {
-          gameState.scores[payload.player] -= 1; // Deduct 1 point
+          gameState.scores[payload.player] -= 1;
         }
         console.log(`Updated scores after deduction:`, gameState.scores);
         broadcast({ type: 'scoreUpdate', payload: gameState.scores });
@@ -68,10 +79,10 @@ wss.on('connection', (ws) => {
     }
   });
 
-  // Initial score state again (redundant, you can delete one of these if you like)
   ws.send(JSON.stringify({ type: 'scoreUpdate', payload: gameState.scores }));
 });
 
+// === Broadcast to all WebSocket clients ===
 function broadcast(data) {
   const json = JSON.stringify(data);
   wss.clients.forEach((client) => {
@@ -81,4 +92,8 @@ function broadcast(data) {
   });
 }
 
-server.listen(3001, () => console.log('WebSocket server running on port 3001'));
+// === Start server ===
+const PORT = 3001;
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server and frontend running at http://localhost:${PORT}`);
+});
