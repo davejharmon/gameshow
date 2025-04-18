@@ -3,6 +3,7 @@ import useWebSocket from 'react-use-websocket';
 import Dashboard from './components/Dashboard';
 import PlayerScreen from './components/PlayerScreen';
 import { useGameSounds } from './hooks/useGameSounds';
+import LandingPage from './components/LandingPage';
 
 const WS_URL = `ws://${window.location.hostname}:3001`;
 
@@ -60,6 +61,10 @@ const App = () => {
     });
 
   const send = (type, payload) => sendJsonMessage({ type, payload });
+
+  if (!role) {
+    return <LandingPage />;
+  }
 
   if (role === 'operator') {
     return (
