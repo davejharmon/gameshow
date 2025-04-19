@@ -1,10 +1,10 @@
 import React from 'react';
-
+import styles from './css/ConnectionStatus.module.css';
 const CONNECTION_TEXT = {
-  0: 'Connecting...',
-  1: 'Connected',
-  2: 'Closing...',
-  3: 'Disconnected — Reconnect',
+  0: '🟡',
+  1: '🟢',
+  2: '🟡',
+  3: '🔴',
 };
 
 const CONNECTION_COLOR = {
@@ -19,17 +19,8 @@ export default function ConnectionStatus({ status, onReconnect }) {
 
   return (
     <button
+      className={styles.connectionStatus}
       onClick={isClickable ? onReconnect : undefined}
-      style={{
-        backgroundColor: CONNECTION_COLOR[status],
-        color: 'white',
-        padding: '6px 12px',
-        border: 'none',
-        borderRadius: '6px',
-        cursor: isClickable ? 'pointer' : 'default',
-        marginBottom: '1rem',
-        fontWeight: 'bold',
-      }}
       disabled={!isClickable} // Visually disables it unless disconnected
     >
       {CONNECTION_TEXT[status]}

@@ -62,14 +62,14 @@ wss.on('connection', (ws) => {
         break;
 
       case 'awardPoint':
-        gameState.scores[payload.player] += 1;
+        const awardPoints = payload.points || 1; // Default to 1 if no points specified
+        gameState.scores[payload.player] += awardPoints;
         broadcast({ type: 'scoreUpdate', payload: gameState.scores });
         break;
 
       case 'deductPoint':
-        if (gameState.scores[payload.player] > 0) {
-          gameState.scores[payload.player] -= 1;
-        }
+        const deductPoints = payload.points || 1; // Default to 1 if no points specified
+        gameState.scores[payload.player] -= deductPoints;
         console.log(`Updated scores after deduction:`, gameState.scores);
         broadcast({ type: 'scoreUpdate', payload: gameState.scores });
         break;

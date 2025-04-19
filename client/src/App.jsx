@@ -5,7 +5,7 @@ import PlayerScreen from './components/PlayerScreen';
 import { useGameSounds } from './hooks/useGameSounds';
 import LandingPage from './components/LandingPage';
 
-const WS_URL = `ws://${window.location.hostname}:3001`;
+const WS_URL = `ws://${window.location.host}/ws`;
 
 const App = () => {
   const urlParams = new URLSearchParams(window.location.search);
