@@ -1,11 +1,28 @@
 import React, { useEffect } from 'react';
-import ConnectionStatus from './ConnectionStatus';
 import styles from './css/PlayerScreen.module.css';
 import { useParams } from 'react-router';
+import classNames from 'classnames';
 
-const PlayerScreen = ({ players, send, connectionStatus, reconnect }) => {
+const PlayerScreen = ({ players, buzzedPlayer, send }) => {
   const { playerId } = useParams();
   const me = players.find((player) => player.id === playerId);
+
+  // Apply conditional class
+  const screenClasses = classNames(styles.screen, {
+    [styles.buzzed]: buzzedPlayer && me.id === buzzedPlayer.id,
+    [styles.disarmed]:
+      me && !me.isArmed && (!buzzedPlayer || me.id !== buzzedPlayer.id),
+  });
+
+  // Determine if this player is buzzed
+  const isBuzzed = buzzedPlayer && me.id === buzzedPlayer.id;
+
+  // Dynamic style for the screen background and text color
+  const screenStyle = {
+    backgroundColor: isBuzzed ? me.color : 'white',
+    color: isBuzzed ? 'black' : me.color,
+  };
+
   // Handle click to buzz in
   const handleClick = () => {
     if (me.isArmed) {
@@ -35,11 +52,7 @@ const PlayerScreen = ({ players, send, connectionStatus, reconnect }) => {
   }
 
   return (
-    <div
-      className={styles.screen}
-      style={{ backgroundColor: me.color }}
-      onClick={handleClick}
-    >
+    <div className={screenClasses} style={screenStyle} onClick={handleClick}>
       <div className={styles.name}>{me.nickname.toUpperCase()}</div>
       <div className={styles.score}>{me.score}</div>
     </div>

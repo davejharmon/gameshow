@@ -1,17 +1,22 @@
 import React from 'react';
-import classNames from 'classnames'; // Make sure to import classNames
+import classNames from 'classnames';
 import styles from './css/PlayerRow.module.css';
 
-const PlayerRow = ({ buzzed, player, deletePlayer }) => {
+const PlayerRow = ({
+  buzzed,
+  player,
+  add,
+  deduct,
+  handleAdd,
+  handleDeduct,
+  rearm,
+  handleDelete,
+}) => {
   // Apply conditional class
   const playerRowClasses = classNames(styles.playerRow, {
     [styles.buzzed]: buzzed,
     [styles.disarmed]: !player.isArmed && !buzzed,
   });
-
-  const handleDeleteClick = () => {
-    deletePlayer(player.id); // Call the deletePlayer function passed from the parent
-  };
 
   return (
     <div className={playerRowClasses}>
@@ -19,10 +24,28 @@ const PlayerRow = ({ buzzed, player, deletePlayer }) => {
       <div style={{ color: player.color }}>{player.nickname} ✏️</div>
       <div>{player.score}</div>
       <div>
-        <button>✔️</button>
-        <button>❌</button>
-        <button>❌</button>
-        <button onClick={handleDeleteClick}>🗑️</button> {/* Delete Button */}
+        <button
+          onClick={() => {
+            handleAdd(player.id);
+          }}
+        >
+          ✔️+{add}
+        </button>
+        <button onClick={rearm}>❌</button>
+        <button
+          onClick={() => {
+            handleDeduct(player.id);
+          }}
+        >
+          ❌-{deduct}
+        </button>
+        <button
+          onClick={() => {
+            handleDelete(player.id);
+          }}
+        >
+          🗑️
+        </button>
       </div>
     </div>
   );

@@ -29,8 +29,8 @@ let gameState = {
       isArmed: false,
     },
   ],
-  pointsToAdd: 1,
-  pointsToDeduct: 1,
+  pointsToAdd: 10,
+  pointsToDeduct: 10,
 };
 
 // Variable to track the next available player ID

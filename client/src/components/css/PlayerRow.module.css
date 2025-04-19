@@ -3,7 +3,6 @@
   flex-direction: row;
   justify-content: space-evenly; /* center items horizontally */
   align-items: center; /* center items vertically (if needed) */
-  width: 70vw;
   border-radius: 0.5rem;
   padding: 0.3rem 1rem;
 }

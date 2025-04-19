@@ -10,12 +10,14 @@ const Dashboard = ({ game, players, send }) => {
 
   // Handle point deduction
   const handleDeductPoint = (playerId) => {
-    send('deductPoint', { id: playerId, points: pointValue });
+    send('deductPoint', { id: playerId, points: game.pointsToDeduct });
+    handleArmBuzzers();
   };
 
   // Handle awarding points
   const handleAwardPoint = (playerId) => {
-    send('awardPoint', { id: playerId, points: pointValue });
+    send('awardPoint', { id: playerId, points: game.pointsToAdd });
+    handleArmBuzzers();
   };
 
   // Toggle settings visibility
@@ -32,7 +34,7 @@ const Dashboard = ({ game, players, send }) => {
     send('armBuzzers');
   };
   // Handle deleting a player
-  const deletePlayer = (playerId) => {
+  const handleDelete = (playerId) => {
     send('deletePlayer', { id: playerId });
   };
   return (
@@ -40,10 +42,15 @@ const Dashboard = ({ game, players, send }) => {
       <h1>Dashboard</h1>
       {players.map((player) => (
         <PlayerRow
-          buzzed={player.id === game.firstBuzz}
           key={player.id}
+          buzzed={player.id === game.firstBuzz}
           player={player}
-          deletePlayer={deletePlayer} // Pass deletePlayer function as a prop
+          add={game.pointsToAdd}
+          deduct={game.pointsToDeduct}
+          handleAdd={handleAwardPoint}
+          handleDeduct={handleDeductPoint}
+          rearm={handleArmBuzzers}
+          handleDelete={handleDelete} // Pass deletePlayer function as a prop
         />
       ))}
 

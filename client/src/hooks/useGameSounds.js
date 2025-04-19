@@ -1,11 +1,7 @@
 import { useMemo } from 'react';
 
-export function useGameSounds(role) {
-  const isOperator = role === 'operator';
-
+export function useGameSounds() {
   const sounds = useMemo(() => {
-    if (!isOperator) return {};
-
     const buzz = new Audio('/sounds/buzzer.wav');
     const incorrect = new Audio('/sounds/incorrect.mp3');
     const correct = new Audio('/sounds/correct.mp3');
@@ -38,7 +34,7 @@ export function useGameSounds(role) {
         win.play().catch((e) => console.warn('Failed to play win sound:', e));
       },
     };
-  }, [isOperator]);
+  });
 
   // fallback to no-ops if not operator
   return {

@@ -11,21 +11,18 @@ const WS_URL = `ws://${window.location.host}/ws`;
 
 const initialGameState = {
   firstBuzz: null,
-  pointsToAdd: 1,
-  pointsToDeduct: 1,
+  pointsToAdd: 10,
+  pointsToDeduct: 10,
 };
 
-const redirectToRole = (role) => {
-  const url = new URL(window.location.href);
-  url.searchParams.set('role', role);
-  window.location.href = url.toString();
-};
+// const redirectToRole = (role) => {
+//   const url = new URL(window.location.href);
+//   url.searchParams.set('role', role);
+//   window.location.href = url.toString();
+// };
 
 const App = () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const role = urlParams.get('role');
-  const { playBuzz, playIncorrect, playCorrect } = useGameSounds(role);
-
+  const { playBuzz, playIncorrect, playCorrect } = useGameSounds();
   const [players, setPlayers] = useState([]);
   const [game, setGame] = useState(initialGameState);
   const [buzzedPlayer, setBuzzedPlayer] = useState(null);
