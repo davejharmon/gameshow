@@ -1,65 +1,66 @@
 import React, { useState } from 'react';
 import ConnectionStatus from './ConnectionStatus';
+import Settings from './Settings';
 import styles from './css/Dashboard.module.css';
-const Dashboard = ({
-  scores,
-  send,
-  firstBuzz,
-  connectionStatus,
-  reconnect,
-}) => {
-  const [pointValue, setPointValue] = useState(1); // State to control points for award/deduct
+import PlayerRow from './PlayerRow';
 
-  const handleDeductPoint = (player) => {
-    console.log(`Sending deduct point for: ${player}`); // Debugging log
-    send('deductPoint', { player, points: pointValue }); // Sending deductPoint message with points value
+const Dashboard = ({ game, players, send }) => {
+  const [pointValue, setPointValue] = useState(1);
+  const [showSettings, setShowSettings] = useState(false);
+
+  // Handle point deduction
+  const handleDeductPoint = (playerId) => {
+    send('deductPoint', { id: playerId, points: pointValue });
   };
 
-  const handleAwardPoint = (player) => {
-    console.log(`Sending award point for: ${player}`); // Debugging log
-    send('awardPoint', { player, points: pointValue }); // Sending awardPoint message with points value
+  // Handle awarding points
+  const handleAwardPoint = (playerId) => {
+    send('awardPoint', { id: playerId, points: pointValue });
   };
 
+  // Toggle settings visibility
+  const toggleSettings = () => {
+    setShowSettings((prev) => !prev);
+  };
+
+  // Add new player to the game
+  const handleAddPlayer = () => {
+    send('addPlayer');
+  };
+
+  const handleArmBuzzers = () => {
+    send('armBuzzers');
+  };
+  // Handle deleting a player
+  const deletePlayer = (playerId) => {
+    send('deletePlayer', { id: playerId });
+  };
   return (
     <div className={styles.screen}>
       <h1>Dashboard</h1>
-      <ConnectionStatus status={connectionStatus} onReconnect={reconnect} />
-
-      <button onClick={() => send('armBuzzers')}>Arm Buzzers</button>
-
-      <h2>Scores</h2>
-      {console.log('firstBuzz:', firstBuzz)}
-      {Object.entries(scores).map(([player, score]) => {
-        const isFirstBuzzed = firstBuzz === player;
-        return (
-          <div key={player}>
-            {player}: {score}
-            <button
-              onClick={() => handleAwardPoint(player)}
-              style={{
-                backgroundColor: isFirstBuzzed ? 'gold' : 'transparent',
-                fontWeight: isFirstBuzzed ? 'bold' : 'normal',
-              }}
-            >
-              +{pointValue}
-            </button>
-            <button onClick={() => handleDeductPoint(player)}>
-              -{pointValue}
-            </button>
-          </div>
-        );
-      })}
-
-      {/* Settings for controlling points */}
-      <div>
-        <h3>Set Points for Award/Deduct</h3>
-        <input
-          type='number'
-          value={pointValue}
-          min='1'
-          onChange={(e) => setPointValue(parseInt(e.target.value))}
+      {players.map((player) => (
+        <PlayerRow
+          buzzed={player.id === game.firstBuzz}
+          key={player.id}
+          player={player}
+          deletePlayer={deletePlayer} // Pass deletePlayer function as a prop
         />
+      ))}
+
+      <div className={styles.footer}>
+        <button onClick={handleArmBuzzers}>Arm buzzers</button>
+        <button onClick={toggleSettings}>
+          {showSettings ? 'Hide Settings' : 'Settings'}
+        </button>
+        <button onClick={handleAddPlayer}>Add Player</button>
       </div>
+      {showSettings && (
+        <Settings
+          pointValue={pointValue}
+          setPointValue={setPointValue}
+          send={send}
+        />
+      )}
     </div>
   );
 };

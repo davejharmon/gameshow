@@ -1,50 +1,47 @@
 import React, { useEffect } from 'react';
-import { ReadyState } from 'react-use-websocket';
 import ConnectionStatus from './ConnectionStatus';
 import styles from './css/PlayerScreen.module.css';
+import { useParams } from 'react-router';
 
-const PlayerScreen = ({
-  role,
-  scores,
-  buzzedPlayer,
-  send,
-  connectionStatus,
-  reconnect,
-}) => {
-  const isBuzzedIn = buzzedPlayer === role;
-  const canBuzz = !buzzedPlayer;
-
+const PlayerScreen = ({ players, send, connectionStatus, reconnect }) => {
+  const { playerId } = useParams();
+  const me = players.find((player) => player.id === playerId);
+  // Handle click to buzz in
   const handleClick = () => {
-    if (canBuzz) {
-      send('buzz', { player: role });
+    if (me.isArmed) {
+      send('buzz', { id: me.id });
     }
   };
 
+  // Listen for spacebar or enter key press to buzz in
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if ((e.code === 'Space' || e.code === 'Enter') && canBuzz) {
-        send('buzz', { player: role });
+      if ((e.code === 'Space' || e.code === 'Enter') && me.isArmed) {
+        send('buzz', { id: me.id });
       }
     };
 
-    // Add event listener for space/enter keys
     window.addEventListener('keydown', handleKeyDown);
-    // Clean up the event listener on component unmount
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canBuzz, role, send]);
+  }, [me, send]);
+
+  // If player data is not available, show an error message
+  if (!me) {
+    return (
+      <div className={styles.screen}>
+        <h2>Player not found</h2>
+      </div>
+    );
+  }
 
   return (
     <div
       className={styles.screen}
-      onClick={handleClick} // Trigger buzz on screen click
-      style={{
-        backgroundColor: isBuzzedIn ? 'gold' : 'initial',
-      }}
+      style={{ backgroundColor: me.color }}
+      onClick={handleClick}
     >
-      <div className={styles.name}>{role.toUpperCase()}</div>
-      <div className={styles.score}>{scores[role]}</div>
-
-      <ConnectionStatus status={connectionStatus} onReconnect={reconnect} />
+      <div className={styles.name}>{me.nickname.toUpperCase()}</div>
+      <div className={styles.score}>{me.score}</div>
     </div>
   );
 };

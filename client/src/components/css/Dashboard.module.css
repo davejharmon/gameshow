@@ -5,22 +5,13 @@
   align-items: center; /* Center children horizontally */
   box-sizing: border-box;
   height: 100vh; /* Full viewport height */
+  gap: 1rem;
 }
 
-.name {
-  flex: 0 1 20%; /* Take up 20% of the height */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem; /* Adjust font size as needed */
-}
-
-.score {
-  flex: 1; /* Fill the remaining space */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Stretch full width */
-  font-size: clamp(2rem, 80vh, 20rem); /* Scales text with viewport width */
-  text-align: center;
+.footer {
+  display: inherit;
+  flex-direction: row;
+  justify-content: center; /* center items horizontally */
+  align-items: center; /* center items vertically (if needed) */
+  gap: 1rem;
 }

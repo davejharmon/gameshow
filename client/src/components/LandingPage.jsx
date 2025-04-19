@@ -1,59 +1,36 @@
 import React from 'react';
-
-const LandingPage = () => {
-  const redirectToRole = (role) => {
-    const url = new URL(window.location.href);
-    url.searchParams.set('role', role);
-    window.location.href = url.toString();
-  };
-
+import { useNavigate, useParams } from 'react-router';
+import styles from './css/LandingPage.module.css';
+const LandingPage = ({ players }) => {
+  const { '*': splat } = useParams();
+  let navigate = useNavigate();
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>Welcome to the Game Show</h1>
-      <p>Select your role:</p>
-      <div style={styles.buttonContainer}>
-        <button
-          style={styles.button}
-          onClick={() => redirectToRole('operator')}
-        >
-          Operator
+    <div>
+      <h1>🎉 Welcome to the Game Show 🎉</h1>
+      <p>Select your role to begin:</p>
+
+      <div>
+        <h2>Dashboard</h2>
+        <button onClick={() => navigate('/dashboard')}>
+          Operator Dashboard
         </button>
-        <button style={styles.button} onClick={() => redirectToRole('player1')}>
-          Player 1
-        </button>
-        <button style={styles.button} onClick={() => redirectToRole('player2')}>
-          Player 2
-        </button>
+      </div>
+
+      <div>
+        <h2>Players</h2>
+        <div>
+          {players.map((player) => (
+            <button
+              key={player.id}
+              onClick={() => navigate(`/players/${player.id}`)}
+            >
+              {player.nickname}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
-};
-
-const styles = {
-  container: {
-    padding: '2rem',
-    textAlign: 'center',
-    fontFamily: 'Arial, sans-serif',
-  },
-  header: {
-    fontSize: '2rem',
-    marginBottom: '1rem',
-  },
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '1rem',
-    marginTop: '1rem',
-  },
-  button: {
-    padding: '0.75rem 1.5rem',
-    fontSize: '1rem',
-    cursor: 'pointer',
-    borderRadius: '8px',
-    border: '1px solid #ccc',
-    backgroundColor: '#f0f0f0',
-    transition: 'background-color 0.2s',
-  },
 };
 
 export default LandingPage;
