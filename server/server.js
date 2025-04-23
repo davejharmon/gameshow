@@ -8,13 +8,13 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
 const pleasingColors = [
-  'tomato',
-  'cornflowerblue',
-  'mediumseagreen',
-  'orchid',
-  'skyblue',
-  'sandybrown',
-  'mediumslateblue',
+  '#FF6347', // tomato
+  '#6495ED', // cornflowerblue
+  '#3CB371', // mediumseagreen
+  '#DA70D6', // orchid
+  '#87CEEB', // skyblue
+  '#F4A460', // sandybrown
+  '#7B68EE', // mediumslateblue
 ];
 
 const initialGameState = {
@@ -30,8 +30,8 @@ const initialGameState = {
   ],
   pointsToAdd: 10,
   pointsToDeduct: 10,
-  nameSize: 15,
-  scoreSize: 40,
+  nameSize: 8,
+  scoreSize: 32,
 };
 
 // === Game State ===
@@ -82,6 +82,9 @@ wss.on('connection', (ws) => {
         break;
       case 'setScore':
         handleSetScore(payload);
+        break;
+      case 'setPlayerColor':
+        handleSetPlayerColor(payload);
         break;
       case 'awardPoint':
         handleAwardPoint(payload);
@@ -134,6 +137,35 @@ function sendGameState(ws) {
       },
     })
   );
+}
+
+function handleSetPlayerColor(payload) {
+  const { id, color } = payload;
+
+  if (typeof id !== 'string' || typeof color !== 'string') {
+    console.error('Invalid player ID or color:', payload);
+    return;
+  }
+
+  const player = gameState.players.find((p) => p.id === id);
+
+  if (!player) {
+    console.warn(`Player with ID "${id}" not found.`);
+    return;
+  }
+
+  player.color = color;
+
+  broadcast({
+    type: 'playerColorUpdated',
+    payload: {
+      id,
+      color,
+      players: gameState.players,
+    },
+  });
+
+  console.log(`Player ${id}'s color updated to ${color}`);
 }
 
 function handleAddPlayer() {

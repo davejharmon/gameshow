@@ -1,0 +1,43 @@
+/* Settings.module.css */
+
+.container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  margin-top: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.settingItem {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inlineInput {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttonRow {
+  grid-column: span 2;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.inputNarrow {
+  width: 80px;
+}

@@ -87,6 +87,7 @@ const App = () => {
 
         case 'playerAdded':
         case 'playerDeleted':
+        case 'playerColorUpdated':
         case 'nicknameUpdated':
           setPlayers(payload.players);
           if (type === 'playerDeleted') {

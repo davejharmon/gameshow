@@ -1,46 +1,47 @@
 import { useMemo } from 'react';
 
+function createAudioWithFallback(basePath) {
+  const audio = new Audio();
+  audio.src = `${basePath}.mp3`;
+
+  const fallback = () => {
+    // On error, switch to .wav
+    audio.src = `${basePath}.wav`;
+    audio.load();
+  };
+
+  // Try .mp3 first, fallback to .wav if it fails to load
+  audio.addEventListener('error', fallback, { once: true });
+
+  return audio;
+}
+
 export function useGameSounds() {
   const sounds = useMemo(() => {
-    const buzz = new Audio('/sounds/buzzer.wav');
-    const incorrect = new Audio('/sounds/incorrect.mp3');
-    const correct = new Audio('/sounds/correct.mp3');
-    const win = new Audio('/sounds/win.mp3');
-
-    buzz.volume = 1;
-    incorrect.volume = 0.6;
-    correct.volume = 0.8;
-    win.volume = 1;
+    const buzz = createAudioWithFallback('/sounds/buzzer');
+    const incorrect = createAudioWithFallback('/sounds/incorrect');
+    const correct = createAudioWithFallback('/sounds/correct');
+    const win = createAudioWithFallback('/sounds/win');
+    const sound1 = createAudioWithFallback('/sounds/sound1');
+    const sound2 = createAudioWithFallback('/sounds/sound2');
+    const sound3 = createAudioWithFallback('/sounds/sound3');
+    const sound4 = createAudioWithFallback('/sounds/sound4');
+    const sound5 = createAudioWithFallback('/sounds/sound5');
+    const sound6 = createAudioWithFallback('/sounds/sound6');
 
     return {
-      playBuzz: () => {
-        console.log('🎵 Playing 🔔 Buzz sound');
-        buzz.play().catch((e) => console.warn('Failed to play buzz sound:', e));
-      },
-      playIncorrect: () => {
-        console.log('🎵 Playing ❌ Incorrect sound');
-        incorrect
-          .play()
-          .catch((e) => console.warn('Failed to play reset sound:', e));
-      },
-      playCorrect: () => {
-        console.log('🎵 Playing ✔️ Correct sound');
-        correct
-          .play()
-          .catch((e) => console.warn('Failed to play point sound:', e));
-      },
-      playWin: () => {
-        console.log('🎵 Playing Win sound');
-        win.play().catch((e) => console.warn('Failed to play win sound:', e));
-      },
+      playBuzz: () => buzz.play().catch(console.warn),
+      playIncorrect: () => incorrect.play().catch(console.warn),
+      playCorrect: () => correct.play().catch(console.warn),
+      playWin: () => win.play().catch(console.warn),
+      playSound1: () => sound1.play().catch(console.warn),
+      playSound2: () => sound2.play().catch(console.warn),
+      playSound3: () => sound3.play().catch(console.warn),
+      playSound4: () => sound4.play().catch(console.warn),
+      playSound5: () => sound5.play().catch(console.warn),
+      playSound6: () => sound6.play().catch(console.warn),
     };
-  });
+  }, []);
 
-  // fallback to no-ops if not operator
-  return {
-    playBuzz: sounds.playBuzz || (() => {}),
-    playIncorrect: sounds.playIncorrect || (() => {}),
-    playCorrect: sounds.playCorrect || (() => {}),
-    playWin: sounds.playWin || (() => {}),
-  };
+  return sounds;
 }

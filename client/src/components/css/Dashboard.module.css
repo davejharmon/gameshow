@@ -16,3 +16,11 @@
   align-items: center; /* center items vertically (if needed) */
   gap: 1rem;
 }
+
+.soundboard {
+  display: inherit;
+  flex-direction: row;
+  justify-content: center; /* center items horizontally */
+  align-items: center; /* center items vertically (if needed) */
+  gap: 1rem;
+}

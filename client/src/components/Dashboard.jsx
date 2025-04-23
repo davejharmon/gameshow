@@ -3,10 +3,19 @@ import ConnectionStatus from './ConnectionStatus';
 import Settings from './Settings';
 import styles from './css/Dashboard.module.css';
 import PlayerRow from './PlayerRow';
+import { useGameSounds } from '../hooks/useGameSounds'; // Make sure the path is correct
 
 const Dashboard = ({ game, setGame, players, send }) => {
-  // Manage game state locally in Dashboard
   const [showSettings, setShowSettings] = useState(false);
+  const [showSoundboard, setShowSoundboard] = useState(true);
+  const {
+    playSound1,
+    playSound2,
+    playSound3,
+    playSound4,
+    playSound5,
+    playSound6,
+  } = useGameSounds();
 
   // Handle point deduction
   const handleDeductPoint = (playerId) => {
@@ -57,6 +66,16 @@ const Dashboard = ({ game, setGame, players, send }) => {
   return (
     <div className={styles.screen}>
       <h1>Dashboard</h1>
+      {showSoundboard && (
+        <div className={styles.soundboard}>
+          <button onClick={playSound1}>Sound 1</button>
+          <button onClick={playSound2}>Sound 2</button>
+          <button onClick={playSound3}>Sound 3</button>
+          <button onClick={playSound4}>Sound 4</button>
+          <button onClick={playSound5}>Sound 5</button>
+          <button onClick={playSound6}>Sound 6</button>
+        </div>
+      )}
       {players.map((player) => (
         <PlayerRow
           key={player.id}
@@ -83,9 +102,16 @@ const Dashboard = ({ game, setGame, players, send }) => {
           {showSettings ? 'Hide Settings' : 'Settings'}
         </button>
       </div>
+
       {showSettings && (
         <div>
-          <Settings game={game} send={send} setGame={setGame} />
+          <Settings
+            game={game}
+            send={send}
+            setGame={setGame}
+            showSoundboard={showSoundboard}
+            setShowSoundboard={setShowSoundboard}
+          />
         </div>
       )}
     </div>

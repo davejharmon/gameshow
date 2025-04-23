@@ -68,7 +68,6 @@ const PlayerScreen = ({
       send('buzz', { id: me.id });
     }
   };
-  console.log(nameSize, scoreSize);
   return (
     <div className={screenClasses} style={screenStyle} onClick={handleClick}>
       <div
@@ -78,7 +77,7 @@ const PlayerScreen = ({
           fontSize: `${nameSize}vw`,
         }}
       >
-        {me.nickname.toUpperCase()}
+        {me.nickname}
       </div>
       <div
         className={styles.score}
