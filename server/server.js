@@ -67,6 +67,10 @@ wss.on('connection', (ws) => {
       case 'deletePlayer':
         handleDeletePlayer(payload);
         break;
+      case 'lockBuzzers':
+        handleLockBuzzers();
+        break;
+
       case 'armBuzzers':
         handleArmBuzzers(payload);
         break;
@@ -146,6 +150,21 @@ function handleDeletePlayer(payload) {
       },
     });
   }
+}
+
+function handleLockBuzzers() {
+  gameState.players.forEach((player) => {
+    player.isArmed = false;
+  });
+
+  console.log('All buzzers locked.');
+
+  broadcast({
+    type: 'buzzersLocked',
+    payload: {
+      players: gameState.players,
+    },
+  });
 }
 
 /**

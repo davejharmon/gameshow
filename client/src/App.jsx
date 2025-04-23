@@ -41,14 +41,34 @@ const App = () => {
       const { type, payload } = data;
 
       switch (type) {
-        case 'buzzRegistered':
+        case 'buzzRegistered': {
+          const buzzedId = payload.player.id;
+
           setBuzzedPlayer(payload.player);
           setGame((prev) => ({
             ...prev,
             firstBuzz: payload.firstBuzz,
           }));
-          setPlayers(payload.players);
+
+          // Lock all buzzers: set isArmed to false for every player
+          setPlayers(
+            payload.players.map((p) => ({
+              ...p,
+              isArmed: false,
+            }))
+          );
+
           playBuzz();
+          break;
+        }
+
+        case 'buzzersLocked':
+          setBuzzedPlayer(null);
+          setGame((prev) => ({
+            ...prev,
+            firstBuzz: null,
+          }));
+          setPlayers(payload.players);
           break;
 
         case 'buzzersArmed':

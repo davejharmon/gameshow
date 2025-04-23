@@ -61,7 +61,9 @@ const PlayerScreen = ({ players, buzzedPlayer, send }) => {
 
   return (
     <div className={screenClasses} style={screenStyle} onClick={handleClick}>
-      <div className={styles.name}>{me.nickname.toUpperCase()}</div>
+      <div className={styles.name} style={{ backgroundColor: me.color }}>
+        {me.nickname.toUpperCase()}
+      </div>
       <div className={styles.score}>{me.score}</div>
     </div>
   );

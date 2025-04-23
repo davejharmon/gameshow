@@ -13,6 +13,7 @@ const PlayerRow = ({
   rearm,
   handleDelete,
   send,
+  showSettings,
 }) => {
   // Apply conditional class
   const playerRowClasses = classNames(styles.playerRow, {
@@ -36,7 +37,6 @@ const PlayerRow = ({
         >
           ✔️+{add}
         </button>
-        <button onClick={rearm}>❌</button>
         <button
           onClick={() => {
             handleDeduct(player.id);
@@ -44,13 +44,16 @@ const PlayerRow = ({
         >
           ❌-{deduct}
         </button>
-        <button
-          onClick={() => {
-            handleDelete(player.id);
-          }}
-        >
-          🗑️
-        </button>
+        <button onClick={rearm}>🔒</button>
+        {showSettings && (
+          <button
+            onClick={() => {
+              handleDelete(player.id);
+            }}
+          >
+            🗑️
+          </button>
+        )}
       </div>
     </div>
   );

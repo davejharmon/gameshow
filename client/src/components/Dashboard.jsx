@@ -33,10 +33,18 @@ const Dashboard = ({ game, players, send }) => {
   const handleArmBuzzers = () => {
     send('armBuzzers');
   };
+
+  const handleLockBuzzers = () => {
+    send('lockBuzzers');
+  };
   // Handle deleting a player
   const handleDelete = (playerId) => {
     send('deletePlayer', { id: playerId });
   };
+
+  const allArmed = players.every((p) => p.isArmed);
+  const allDisarmed = players.every((p) => !p.isArmed);
+
   return (
     <div className={styles.screen}>
       <h1>Dashboard</h1>
@@ -52,11 +60,17 @@ const Dashboard = ({ game, players, send }) => {
           rearm={handleArmBuzzers}
           handleDelete={handleDelete} // Pass deletePlayer function as a prop
           send={send}
+          showSettings={showSettings}
         />
       ))}
 
       <div className={styles.footer}>
-        <button onClick={handleArmBuzzers}>Arm buzzers</button>
+        <button onClick={handleArmBuzzers} disabled={allArmed}>
+          Arm buzzers
+        </button>
+        <button onClick={handleLockBuzzers} disabled={allDisarmed}>
+          Lock buzzers
+        </button>
         <button onClick={toggleSettings}>
           {showSettings ? 'Hide Settings' : 'Settings'}
         </button>

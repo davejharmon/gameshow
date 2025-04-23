@@ -1,26 +1,30 @@
 .screen {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Align children from the top */
-  align-items: center; /* Center children horizontally */
+  justify-content: flex-start;
+  align-items: center;
   box-sizing: border-box;
-  height: 100vh; /* Full viewport height */
+  height: 100vh;
+  width: 100vw;
 }
 
 .name {
-  flex: 0 1 20%; /* Take up 20% of the height */
+  flex: 0 0 15vh; /* Fixed max height of 15% of viewport height */
+  max-height: 15vh;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2rem; /* Adjust font size as needed */
+  font-size: 2rem;
+  color: white;
 }
 
 .score {
-  flex: 1; /* Fill the remaining space */
+  flex: 1 1 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Stretch full width */
-  font-size: clamp(2rem, 80vh, 20rem); /* Scales text with viewport width */
+  width: 100%;
+  font-size: clamp(4rem, 80vh, 20rem); /* Scales with viewport */
   text-align: center;
 }
