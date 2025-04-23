@@ -85,6 +85,11 @@ const App = () => {
           }));
           break;
 
+        // Handle the nickname update message
+        case 'nicknameUpdated':
+          setPlayers(payload.players);
+          break;
+
         default:
           console.warn('⚠️ Unhandled message type:', type);
       }

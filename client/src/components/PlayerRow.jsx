@@ -1,6 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import styles from './css/PlayerRow.module.css';
+import Nickname from './Nickname';
 
 const PlayerRow = ({
   buzzed,
@@ -11,6 +12,7 @@ const PlayerRow = ({
   handleDeduct,
   rearm,
   handleDelete,
+  send,
 }) => {
   // Apply conditional class
   const playerRowClasses = classNames(styles.playerRow, {
@@ -20,8 +22,11 @@ const PlayerRow = ({
 
   return (
     <div className={playerRowClasses}>
-      <div style={{ backgroundColor: player.color }}>🟥</div>
-      <div style={{ color: player.color }}>{player.nickname} ✏️</div>
+      <div
+        className={styles.playerColor}
+        style={{ backgroundColor: player.color }}
+      />
+      <Nickname player={player} send={send} />
       <div>{player.score}</div>
       <div>
         <button

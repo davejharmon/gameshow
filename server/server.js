@@ -82,6 +82,9 @@ wss.on('connection', (ws) => {
       case 'resetGame':
         handleResetGame();
         break;
+      case 'editNickname':
+        handleEditNickname(payload);
+        break;
 
       default:
         console.warn('Unknown message type:', type);
@@ -272,6 +275,29 @@ function handleResetGame() {
       players: gameState.players,
     },
   });
+}
+
+function handleEditNickname(payload) {
+  const { id, newNickname } = payload;
+
+  // Find the player by their ID
+  const player = gameState.players.find((p) => p.id === id);
+  if (player) {
+    // Update the player's nickname
+    player.nickname = newNickname;
+
+    // Broadcast the updated game state to all clients
+    broadcast({
+      type: 'nicknameUpdated',
+      payload: {
+        players: gameState.players,
+      },
+    });
+
+    console.log(`Nickname updated for player ${id}: ${newNickname}`);
+  } else {
+    console.log(`Player with ID ${id} not found`);
+  }
 }
 
 // === WebSocket Broadcast ===

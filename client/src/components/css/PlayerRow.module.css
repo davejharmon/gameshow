@@ -4,7 +4,10 @@
   justify-content: space-evenly; /* center items horizontally */
   align-items: center; /* center items vertically (if needed) */
   border-radius: 0.5rem;
-  padding: 0.3rem 1rem;
+  height: 3rem; /* 👈 optional: define a height */
+  gap: 1rem;
+  margin: 1rem;
+  font-weight: bold;
 }
 
 .buzzed {
@@ -13,4 +16,10 @@
 
 .disarmed {
   background-color: gainsboro;
+}
+
+.playerColor {
+  height: 100%; /* Match height of the .playerRow */
+  max-width: 3rem;
+  aspect-ratio: 1 / 1; /* Keep it square */
 }

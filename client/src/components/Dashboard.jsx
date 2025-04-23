@@ -51,6 +51,7 @@ const Dashboard = ({ game, players, send }) => {
           handleDeduct={handleDeductPoint}
           rearm={handleArmBuzzers}
           handleDelete={handleDelete} // Pass deletePlayer function as a prop
+          send={send}
         />
       ))}
 

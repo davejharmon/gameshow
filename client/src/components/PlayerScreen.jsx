@@ -1,11 +1,40 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styles from './css/PlayerScreen.module.css';
 import { useParams } from 'react-router';
 import classNames from 'classnames';
 
 const PlayerScreen = ({ players, buzzedPlayer, send }) => {
   const { playerId } = useParams();
-  const me = players.find((player) => player.id === playerId);
+  const me = useMemo(() => {
+    return players.find((p) => p.id === playerId);
+  }, [players, playerId]);
+
+  // Protect against undefined player data by checking it in the effect itself
+  useEffect(() => {
+    if (me) {
+      const handleKeyDown = (e) => {
+        if ((e.code === 'Space' || e.code === 'Enter') && me.isArmed) {
+          send('buzz', { id: me.id });
+        }
+      };
+
+      window.addEventListener('keydown', handleKeyDown);
+
+      // Cleanup the event listener on component unmount
+      return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    }
+  }, [me, send]); // Only trigger when `me` or `send` changes
+
+  // If player data is not yet loaded or found, show loading or error message
+  if (!me) {
+    return (
+      <div className={styles.screen}>
+        <h2>Loading Player Data...</h2> {/* Or use a fallback message */}
+      </div>
+    );
+  }
 
   // Apply conditional class
   const screenClasses = classNames(styles.screen, {
@@ -29,27 +58,6 @@ const PlayerScreen = ({ players, buzzedPlayer, send }) => {
       send('buzz', { id: me.id });
     }
   };
-
-  // Listen for spacebar or enter key press to buzz in
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.code === 'Space' || e.code === 'Enter') && me.isArmed) {
-        send('buzz', { id: me.id });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [me, send]);
-
-  // If player data is not available, show an error message
-  if (!me) {
-    return (
-      <div className={styles.screen}>
-        <h2>Player not found</h2>
-      </div>
-    );
-  }
 
   return (
     <div className={screenClasses} style={screenStyle} onClick={handleClick}>
