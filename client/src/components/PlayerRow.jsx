@@ -2,6 +2,7 @@ import React from 'react';
 import classNames from 'classnames';
 import styles from './css/PlayerRow.module.css';
 import Nickname from './Nickname';
+import Score from './Score';
 
 const PlayerRow = ({
   buzzed,
@@ -10,7 +11,6 @@ const PlayerRow = ({
   deduct,
   handleAdd,
   handleDeduct,
-  rearm,
   handleDelete,
   send,
   showSettings,
@@ -28,7 +28,7 @@ const PlayerRow = ({
         style={{ backgroundColor: player.color }}
       />
       <Nickname player={player} send={send} />
-      <div>{player.score}</div>
+      <Score player={player} send={send} />
       <div>
         <button
           onClick={() => {
@@ -44,7 +44,6 @@ const PlayerRow = ({
         >
           ❌-{deduct}
         </button>
-        <button onClick={rearm}>🔒</button>
         {showSettings && (
           <button
             onClick={() => {

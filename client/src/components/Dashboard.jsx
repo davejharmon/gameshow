@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ConnectionStatus from './ConnectionStatus';
 import Settings from './Settings';
 import styles from './css/Dashboard.module.css';
 import PlayerRow from './PlayerRow';
 
-const Dashboard = ({ game, players, send }) => {
-  const [pointValue, setPointValue] = useState(1);
+const Dashboard = ({ game, setGame, players, send }) => {
+  // Manage game state locally in Dashboard
   const [showSettings, setShowSettings] = useState(false);
 
   // Handle point deduction
@@ -25,11 +25,6 @@ const Dashboard = ({ game, players, send }) => {
     setShowSettings((prev) => !prev);
   };
 
-  // Add new player to the game
-  const handleAddPlayer = () => {
-    send('addPlayer');
-  };
-
   const handleArmBuzzers = () => {
     send('armBuzzers');
   };
@@ -37,10 +32,24 @@ const Dashboard = ({ game, players, send }) => {
   const handleLockBuzzers = () => {
     send('lockBuzzers');
   };
+
   // Handle deleting a player
   const handleDelete = (playerId) => {
     send('deletePlayer', { id: playerId });
   };
+
+  // Handle receiving game state updates
+  useEffect(() => {
+    // Assuming `gameState` is received from the WebSocket or passed down
+    const handleGameStateUpdate = (newGameState) => {
+      setGame(newGameState); // Update the game state whenever it's updated
+    };
+
+    // Listen for game state updates (this is just an example, you'll adapt based on actual data flow)
+    // You would need to hook this up to your WebSocket or state management system
+    // Example: send a request to update or subscribe to game state from the server
+    // For now, we're assuming you can set the game state directly
+  }, []); // Empty dependency array to run once on mount
 
   const allArmed = players.every((p) => p.isArmed);
   const allDisarmed = players.every((p) => !p.isArmed);
@@ -57,8 +66,7 @@ const Dashboard = ({ game, players, send }) => {
           deduct={game.pointsToDeduct}
           handleAdd={handleAwardPoint}
           handleDeduct={handleDeductPoint}
-          rearm={handleArmBuzzers}
-          handleDelete={handleDelete} // Pass deletePlayer function as a prop
+          handleDelete={handleDelete}
           send={send}
           showSettings={showSettings}
         />
@@ -74,14 +82,11 @@ const Dashboard = ({ game, players, send }) => {
         <button onClick={toggleSettings}>
           {showSettings ? 'Hide Settings' : 'Settings'}
         </button>
-        <button onClick={handleAddPlayer}>Add Player</button>
       </div>
       {showSettings && (
-        <Settings
-          pointValue={pointValue}
-          setPointValue={setPointValue}
-          send={send}
-        />
+        <div>
+          <Settings game={game} send={send} setGame={setGame} />
+        </div>
       )}
     </div>
   );

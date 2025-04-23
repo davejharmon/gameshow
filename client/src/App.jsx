@@ -13,13 +13,9 @@ const initialGameState = {
   firstBuzz: null,
   pointsToAdd: 10,
   pointsToDeduct: 10,
+  nameSize: 24,
+  scoreSize: 36,
 };
-
-// const redirectToRole = (role) => {
-//   const url = new URL(window.location.href);
-//   url.searchParams.set('role', role);
-//   window.location.href = url.toString();
-// };
 
 const App = () => {
   const { playBuzz, playIncorrect, playCorrect } = useGameSounds();
@@ -41,9 +37,12 @@ const App = () => {
       const { type, payload } = data;
 
       switch (type) {
-        case 'buzzRegistered': {
-          const buzzedId = payload.player.id;
+        case 'gameState':
+          setGame(payload.game);
+          setPlayers(payload.players);
+          break;
 
+        case 'buzzRegistered': {
           setBuzzedPlayer(payload.player);
           setGame((prev) => ({
             ...prev,
@@ -63,6 +62,7 @@ const App = () => {
         }
 
         case 'buzzersLocked':
+        case 'buzzersArmed': {
           setBuzzedPlayer(null);
           setGame((prev) => ({
             ...prev,
@@ -70,15 +70,7 @@ const App = () => {
           }));
           setPlayers(payload.players);
           break;
-
-        case 'buzzersArmed':
-          setBuzzedPlayer(null);
-          setGame((prev) => ({
-            ...prev,
-            firstBuzz: null,
-          }));
-          setPlayers(payload.players);
-          break;
+        }
 
         case 'scoreUpdate':
           setPlayers((prevPlayers) =>
@@ -94,20 +86,45 @@ const App = () => {
           break;
 
         case 'playerAdded':
+        case 'playerDeleted':
+        case 'nicknameUpdated':
           setPlayers(payload.players);
+          if (type === 'playerDeleted') {
+            setGame((prev) => ({
+              ...prev,
+              firstBuzz: payload.firstBuzz,
+            }));
+          }
           break;
 
-        case 'playerDeleted':
-          setPlayers(payload.players);
+        // Generic handler for points updates
+        case 'setPointsToAdd':
+        case 'pointsToAddUpdated':
           setGame((prev) => ({
             ...prev,
-            firstBuzz: payload.firstBuzz,
+            pointsToAdd: payload.pointsToAdd || payload.points,
           }));
           break;
 
-        // Handle the nickname update message
-        case 'nicknameUpdated':
-          setPlayers(payload.players);
+        case 'setPointsToDeduct':
+        case 'pointsToDeductUpdated':
+          setGame((prev) => ({
+            ...prev,
+            pointsToDeduct: payload.pointsToDeduct || payload.points,
+          }));
+          break;
+        case 'nameSizeUpdated':
+          setGame((prev) => ({
+            ...prev,
+            nameSize: payload.nameSize,
+          }));
+          break;
+
+        case 'scoreSizeUpdated':
+          setGame((prev) => ({
+            ...prev,
+            scoreSize: payload.scoreSize,
+          }));
           break;
 
         default:
@@ -118,14 +135,20 @@ const App = () => {
   });
 
   const send = (type, payload) => sendJsonMessage({ type, payload });
-
   return (
     <>
       <ConnectionStatus status={readyState} onReconnect={reconnect} />
       <Routes>
         <Route
           path='dashboard'
-          element={<Dashboard game={game} players={players} send={send} />}
+          element={
+            <Dashboard
+              game={game}
+              setGame={setGame}
+              players={players}
+              send={send}
+            />
+          }
         />
         <Route
           path='players/:playerId'
@@ -134,6 +157,8 @@ const App = () => {
               players={players}
               buzzedPlayer={buzzedPlayer}
               send={send}
+              nameSize={game.nameSize}
+              scoreSize={game.scoreSize}
             />
           }
         />
