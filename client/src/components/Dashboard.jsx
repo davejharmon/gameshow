@@ -68,12 +68,24 @@ const Dashboard = ({ game, setGame, players, send }) => {
       <h1>Dashboard</h1>
       {showSoundboard && (
         <div className={styles.soundboard}>
-          <button onClick={playSound1}>Sound 1</button>
-          <button onClick={playSound2}>Sound 2</button>
-          <button onClick={playSound3}>Sound 3</button>
-          <button onClick={playSound4}>Sound 4</button>
-          <button onClick={playSound5}>Sound 5</button>
-          <button onClick={playSound6}>Sound 6</button>
+          <button className={styles.longButton} onClick={playSound1}>
+            🟥
+          </button>
+          <button className={styles.longButton} onClick={playSound2}>
+            🟧
+          </button>
+          <button className={styles.longButton} onClick={playSound4}>
+            🟩
+          </button>
+          <button className={styles.longButton} onClick={playSound3}>
+            🟨
+          </button>
+          <button className={styles.longButton} onClick={playSound5}>
+            🟦
+          </button>
+          <button className={styles.longButton} onClick={playSound6}>
+            🟪
+          </button>
         </div>
       )}
       {players.map((player) => (

@@ -24,3 +24,7 @@
   align-items: center; /* center items vertically (if needed) */
   gap: 1rem;
 }
+
+.longButton {
+  width: 8em;
+}
