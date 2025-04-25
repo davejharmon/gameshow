@@ -8,16 +8,15 @@ const ScreenLoader = ({ players, buzzedPlayer, send, nameSize, scoreSize }) => {
   const [player, setPlayer] = useState(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      const foundPlayer = players.find((p) => p.id === playerId);
-      if (!foundPlayer) {
-        navigate('/');
-      } else {
-        setPlayer(foundPlayer);
-      }
-    }, 3000);
+    if (!players.length) return; // wait for players to load
 
-    return () => clearTimeout(timer);
+    const foundPlayer = players.find((p) => p.id === playerId);
+
+    if (!foundPlayer) {
+      navigate('/');
+    } else {
+      setPlayer(foundPlayer);
+    }
   }, [players, playerId, navigate]);
 
   if (!player) {

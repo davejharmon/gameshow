@@ -28,7 +28,6 @@ const PlayerScreen = ({
       </div>
     );
   }
-
   const isBuzzed = buzzedPlayer && player.id === buzzedPlayer.id;
 
   const screenClasses = classNames(styles.screen, {

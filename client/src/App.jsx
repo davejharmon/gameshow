@@ -128,6 +128,9 @@ const App = () => {
             scoreSize: payload.scoreSize,
           }));
           break;
+        case 'scoreReset':
+          setPlayers(payload.players);
+          break;
 
         default:
           console.warn('⚠️ Unhandled message type:', type);
@@ -159,6 +162,8 @@ const App = () => {
               players={players}
               buzzedPlayer={buzzedPlayer}
               send={send}
+              nameSize={game.nameSize}
+              scoreSize={game.scoreSize}
             />
           }
         />
