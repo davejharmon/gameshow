@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ConnectionStatus from './ConnectionStatus';
 import Settings from './Settings';
 import styles from './css/Dashboard.module.css';
 import PlayerRow from './PlayerRow';

@@ -6,7 +6,8 @@ import { useGameSounds } from './hooks/useGameSounds';
 import LandingPage from './components/LandingPage';
 import { Route, Routes } from 'react-router';
 import ConnectionStatus from './components/ConnectionStatus';
-
+import Screen from './components/Screen';
+import ScreenLoader from './components/ScreenLoader';
 const WS_URL = `ws://${window.location.host}/ws`;
 
 const initialGameState = {
@@ -154,16 +155,20 @@ const App = () => {
         <Route
           path='players/:playerId'
           element={
-            <PlayerScreen
+            <ScreenLoader
               players={players}
               buzzedPlayer={buzzedPlayer}
               send={send}
-              nameSize={game.nameSize}
-              scoreSize={game.scoreSize}
             />
           }
         />
         <Route path='/*' element={<LandingPage players={players} />} />
+        <Route
+          path='/screen'
+          element={
+            <Screen players={players} buzzedPlayer={buzzedPlayer} send={send} />
+          }
+        />
       </Routes>
     </>
   );

@@ -1,26 +1,13 @@
-import React, { useEffect } from 'react';
-import styles from './css/PlayerScreen.module.css';
+import React from 'react';
 import classNames from 'classnames';
+import styles from './css/playerScreenDumb.module.css';
 
-const PlayerScreen = ({
+const PlayerScreenDumb = ({
   player,
   buzzedPlayer,
-  send,
-  nameSize = 24,
-  scoreSize = 36,
+  nameSize = 100, // percentage of container width
+  scoreSize = 100, // percentage of container width
 }) => {
-  // Keydown listener for buzzing in
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.code === 'Space' || e.code === 'Enter') && player.isArmed) {
-        send('buzz', { id: player.id });
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [player, send]);
-
   if (!player) {
     return (
       <div className={styles.screen}>
@@ -42,19 +29,13 @@ const PlayerScreen = ({
     color: isBuzzed ? 'black' : player.color,
   };
 
-  const handleClick = () => {
-    if (player.isArmed) {
-      send('buzz', { id: player.id });
-    }
-  };
-
   return (
-    <div className={screenClasses} style={screenStyle} onClick={handleClick}>
+    <div className={screenClasses} style={screenStyle}>
       <div
         className={styles.name}
         style={{
           backgroundColor: player.color,
-          fontSize: `${nameSize}vw`,
+          fontSize: `${nameSize}%`,
         }}
       >
         {player.nickname}
@@ -62,7 +43,7 @@ const PlayerScreen = ({
       <div
         className={styles.score}
         style={{
-          fontSize: `${scoreSize}vw`,
+          fontSize: `${scoreSize}%`,
         }}
       >
         {player.score}
@@ -71,4 +52,4 @@ const PlayerScreen = ({
   );
 };
 
-export default PlayerScreen;
+export default PlayerScreenDumb;

@@ -14,6 +14,7 @@ const LandingPage = ({ players }) => {
         <button onClick={() => navigate('/dashboard')}>
           Operator Dashboard
         </button>
+        <button onClick={() => navigate('/screen')}>Main Screen</button>
       </div>
 
       <div>
