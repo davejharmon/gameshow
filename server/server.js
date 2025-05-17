@@ -23,7 +23,7 @@ const initialGameState = {
     {
       id: 'player1',
       nickname: 'Player 1',
-      color: 'tomato',
+      color: pleasingColors[0],
       score: 0,
       isArmed: false,
     },
@@ -32,6 +32,10 @@ const initialGameState = {
   pointsToDeduct: 10,
   nameSize: 8,
   scoreSize: 32,
+  timerDuration: 300,
+  isTimerRunning: false,
+  isTimerShowing: false,
+  resetCount: 0,
 };
 
 // === Game State ===
@@ -113,6 +117,18 @@ wss.on('connection', (ws) => {
       case 'setScoreSize':
         handleSetScoreSize(payload);
         break;
+      case 'setTimerDuration':
+        handleSetTimerDuration(payload);
+        break;
+      case 'toggleTimerRunning':
+        handleToggleTimerRunning();
+        break;
+      case 'toggleTimerShowing':
+        handleToggleTimerShowing();
+        break;
+      case 'incrementResetCount':
+        handleIncrementResetCount();
+        break;
       default:
         console.warn('Unknown message type:', type);
     }
@@ -132,11 +148,70 @@ function sendGameState(ws) {
           pointsToDeduct: gameState.pointsToDeduct,
           nameSize: gameState.nameSize, // Add this line
           scoreSize: gameState.scoreSize, // Add this line
+          timerDuration: gameState.timerDuration,
+          isTimerRunning: gameState.isTimerRunning,
+          isTimerShowing: gameState.isTimerShowing,
+          resetCount: gameState.resetCount,
         },
         players: gameState.players,
       },
     })
   );
+}
+
+function handleSetTimerDuration(payload) {
+  const { duration } = payload;
+
+  if (
+    typeof duration !== 'number' ||
+    duration <= 0 ||
+    !Number.isInteger(duration)
+  ) {
+    console.error('Invalid timer duration:', duration);
+    return;
+  }
+
+  gameState.timerDuration = duration;
+
+  broadcast({
+    type: 'timerDurationUpdated',
+    payload: { timerDuration: gameState.timerDuration },
+  });
+
+  console.log(`Timer duration set to ${gameState.timerDuration} seconds.`);
+}
+
+function handleToggleTimerRunning() {
+  gameState.isTimerRunning = !gameState.isTimerRunning;
+
+  broadcast({
+    type: 'timerRunningToggled',
+    payload: { isTimerRunning: gameState.isTimerRunning },
+  });
+
+  console.log(`Timer running: ${gameState.isTimerRunning}`);
+}
+
+function handleToggleTimerShowing() {
+  gameState.isTimerShowing = !gameState.isTimerShowing;
+
+  broadcast({
+    type: 'timerShowingToggled',
+    payload: { isTimerShowing: gameState.isTimerShowing },
+  });
+
+  console.log(`Timer showing: ${gameState.isTimerShowing}`);
+}
+
+function handleIncrementResetCount() {
+  gameState.resetCount += 1;
+
+  broadcast({
+    type: 'resetCountIncremented',
+    payload: { resetCount: gameState.resetCount },
+  });
+
+  console.log(`Reset count incremented: ${gameState.resetCount}`);
 }
 
 function handleSetPlayerColor(payload) {
@@ -393,6 +468,12 @@ function handleResetGame() {
         firstBuzz: gameState.firstBuzz,
         pointsToAdd: gameState.pointsToAdd,
         pointsToDeduct: gameState.pointsToDeduct,
+        nameSize: gameState.nameSize,
+        scoreSize: gameState.scoreSize,
+        timerDuration: gameState.timerDuration,
+        isTimerRunning: gameState.isTimerRunning,
+        isTimerShowing: gameState.isTimerShowing,
+        resetCount: gameState.resetCount,
       },
       players: gameState.players,
     },

@@ -3,10 +3,12 @@ import Settings from './Settings';
 import styles from './css/Dashboard.module.css';
 import PlayerRow from './PlayerRow';
 import { useGameSounds } from '../hooks/useGameSounds'; // Make sure the path is correct
+import Timer from './Timer';
 
 const Dashboard = ({ game, setGame, players, send }) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showSoundboard, setShowSoundboard] = useState(true);
+  const [showTimer, setShowTimer] = useState(true);
   const {
     playSound1,
     playSound2,
@@ -61,7 +63,7 @@ const Dashboard = ({ game, setGame, players, send }) => {
 
   const allArmed = players.every((p) => p.isArmed);
   const allDisarmed = players.every((p) => !p.isArmed);
-
+  console.log(game);
   return (
     <div className={styles.screen}>
       <h1>Dashboard</h1>
@@ -113,7 +115,6 @@ const Dashboard = ({ game, setGame, players, send }) => {
           {showSettings ? 'Hide Settings' : 'Settings'}
         </button>
       </div>
-
       {showSettings && (
         <div>
           <Settings
@@ -125,6 +126,13 @@ const Dashboard = ({ game, setGame, players, send }) => {
           />
         </div>
       )}
+      <Timer
+        isRunning={game.isTimerRunning}
+        isShowing={game.isTimerShowing}
+        duration={game.timerDuration} // 5 minutes
+        resetTrigger={game.resetCount} // change this number to reset
+        onComplete={() => console.log('Timer Done')}
+      />
     </div>
   );
 };

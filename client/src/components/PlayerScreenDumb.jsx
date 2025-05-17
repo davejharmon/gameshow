@@ -35,19 +35,11 @@ const PlayerScreenDumb = ({
         className={styles.name}
         style={{
           backgroundColor: player.color,
-          fontSize: `${nameSize}%`,
         }}
       >
         {player.nickname}
       </div>
-      <div
-        className={styles.score}
-        style={{
-          fontSize: `${scoreSize}%`,
-        }}
-      >
-        {player.score}
-      </div>
+      <div className={styles.score}>{player.score}</div>
     </div>
   );
 };

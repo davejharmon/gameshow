@@ -1,25 +1,30 @@
+.screenContainer {
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
 .screenGrid {
+  flex: 0 0 70%;
   display: flex;
   flex-wrap: wrap;
   flex-flow: row;
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  font-size: 10em;
 }
 
 .screenGrid > div {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100%;
 }
 
-.screenGrid > div > div > div:nth-child(1) {
-  flex: 0 0 20%; /* This takes up 25% of the height */
-  color: white;
-}
-
-.screenGrid > div > div > div:nth-child(2) {
-  flex: 1; /* This takes up the remaining 75% of the height */
+.timer {
+  flex: 0 0 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16em;
+  color: gray;
 }

@@ -1,43 +1,58 @@
-/* Settings.module.css */
-
-.container {
-  padding: 20px;
-  border: 1px solid #ccc;
-  margin-top: 20px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.settingItem {
+.screenContainer {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  height: 100vh;
 }
 
-.labelRow {
+.screenGrid {
+  flex: 0 0 80%;
   display: flex;
+  flex-wrap: wrap;
+  flex-flow: row;
+  gap: 1rem;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
 }
 
-.inlineInput {
+.screenGrid > div {
   display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.screenGrid > div > div > div:nth-child(1) {
+  flex: 0 0 20%;
+  color: white;
+}
+
+.screenGrid > div > div > div:nth-child(2) {
+  flex: 1;
+}
+
+.timer {
+  flex: 0 0 20%;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
+  font-size: 10em;
+  color: white;
 }
 
-.buttonRow {
-  grid-column: span 2;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-start;
-  margin-top: 10px;
+@keyframes pulseRed {
+  0% {
+    color: red;
+    transform: scale(1);
+  }
+  50% {
+    color: darkred;
+    transform: scale(1.1);
+  }
+  100% {
+    color: red;
+    transform: scale(1);
+  }
 }
 
-.inputNarrow {
-  width: 80px;
+.timerWarning {
+  animation: pulseRed 1s infinite;
 }

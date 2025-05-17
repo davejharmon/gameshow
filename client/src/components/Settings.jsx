@@ -10,11 +10,15 @@ const Settings = ({
 }) => {
   const [localNameSize, setLocalNameSize] = useState(game.nameSize || 16);
   const [localScoreSize, setLocalScoreSize] = useState(game.scoreSize || 24);
+  const [localTimerDuration, setLocalTimerDuration] = useState(
+    game.timerDuration || 300
+  );
 
   useEffect(() => {
     setLocalNameSize(game.nameSize || 16);
     setLocalScoreSize(game.scoreSize || 24);
-  }, [game.nameSize, game.scoreSize]);
+    setLocalTimerDuration(game.timerDuration || 300);
+  }, [game.nameSize, game.scoreSize, game.timerDuration]);
 
   const handleSetPointsToAdd = (value) => {
     if (!isNaN(value)) {
@@ -42,6 +46,25 @@ const Settings = ({
       send('setScoreSize', { size: value });
       setGame((prev) => ({ ...prev, scoreSize: value }));
     }
+  };
+
+  const handleTimerDurationChange = (value) => {
+    if (!isNaN(value)) {
+      send('setTimerDuration', { duration: value });
+      setGame((prev) => ({ ...prev, timerDuration: value }));
+    }
+  };
+
+  const toggleTimerVisibility = () => {
+    send('toggleTimerShowing');
+
+    setGame((prev) => ({ ...prev, isTimerShowing: !prev.isTimerShowing }));
+  };
+
+  const toggleTimerRunning = () => {
+    send('toggleTimerRunning');
+
+    setGame((prev) => ({ ...prev, isTimerRunning: !prev.isTimerRunning }));
   };
 
   return (
@@ -124,6 +147,34 @@ const Settings = ({
               className={styles.inputNarrow}
             />
           </div>
+        </div>
+
+        <div className={styles.settingItem}>
+          <label htmlFor='timerDuration'>Timer Duration (sec):</label>
+          <input
+            type='number'
+            id='timerDuration'
+            min='1'
+            value={localTimerDuration}
+            onChange={(e) => {
+              const val = parseInt(e.target.value);
+              setLocalTimerDuration(val);
+            }}
+            onBlur={() => {
+              // Call update only on blur
+              handleTimerDurationChange(localTimerDuration);
+            }}
+            className={styles.inputNarrow}
+          />
+        </div>
+
+        <div className={styles.buttonRow}>
+          <button onClick={toggleTimerVisibility}>
+            {game.isTimerShowing ? 'Hide Timer' : 'Show Timer'}
+          </button>
+          <button onClick={toggleTimerRunning}>
+            {game.isTimerRunning ? 'Pause Timer' : 'Start Timer'}
+          </button>
         </div>
 
         <div className={styles.buttonRow}>

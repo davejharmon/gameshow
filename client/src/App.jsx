@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import useWebSocket from 'react-use-websocket';
 import Dashboard from './components/Dashboard';
-import PlayerScreen from './components/PlayerScreen';
 import { useGameSounds } from './hooks/useGameSounds';
 import LandingPage from './components/LandingPage';
 import { Route, Routes } from 'react-router';
@@ -16,6 +15,10 @@ const initialGameState = {
   pointsToDeduct: 10,
   nameSize: 24,
   scoreSize: 36,
+  timerDuration: 300,
+  isTimerRunning: false,
+  isTimerShowing: false,
+  resetCount: 0,
 };
 
 const App = () => {
@@ -41,6 +44,27 @@ const App = () => {
         case 'gameState':
           setGame(payload.game);
           setPlayers(payload.players);
+          break;
+
+        case 'timerDurationUpdated':
+          setGame((prev) => ({
+            ...prev,
+            timerDuration: payload.timerDuration,
+          }));
+          break;
+
+        case 'timerRunningToggled':
+          setGame((prev) => ({
+            ...prev,
+            isTimerRunning: payload.isTimerRunning,
+          }));
+          break;
+
+        case 'timerShowingToggled':
+          setGame((prev) => ({
+            ...prev,
+            isTimerShowing: payload.isTimerShowing,
+          }));
           break;
 
         case 'buzzRegistered': {
@@ -171,7 +195,17 @@ const App = () => {
         <Route
           path='/screen'
           element={
-            <Screen players={players} buzzedPlayer={buzzedPlayer} send={send} />
+            <Screen
+              players={players}
+              buzzedPlayer={buzzedPlayer}
+              send={send}
+              timer={{
+                timerDuration: game.timerDuration,
+                isTimerRunning: game.isTimerRunning,
+                isTimerShowing: game.isTimerShowing,
+                resetCount: game.resetCount,
+              }}
+            />
           }
         />
       </Routes>

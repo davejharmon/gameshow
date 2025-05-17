@@ -1,0 +1,6 @@
+Applause
+Boo
+Laugh
+Dramatic
+Correct
+Incorrect
