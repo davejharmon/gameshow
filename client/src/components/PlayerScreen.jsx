@@ -17,8 +17,8 @@ const PlayerScreen = ({
       }
     };
 
-    window.addEventListener('keypress', handleKeyDown);
-    return () => window.removeEventListener('keypress', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, [player, send]);
 
   if (!player) {
