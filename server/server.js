@@ -7,6 +7,33 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// === Use pkg-compatible path handling ===
+const fs = require('fs');
+
+const isPkg = typeof process.pkg !== 'undefined';
+
+// baseDir points to the executable directory for pkg builds, or __dirname in dev
+const baseDir = isPkg
+  ? path.dirname(fs.realpathSync(process.execPath))
+  : __dirname;
+
+// Build path relative to baseDir for pkg compatibility
+const buildPath = path.join(baseDir, 'client', 'build');
+
+// === Serve React Frontend ===
+app.use(express.static(buildPath));
+
+app.get('*', (req, res) => {
+  // Use buildPath and sendFile with error handling for diagnostics
+  const indexHtmlPath = path.join(buildPath, 'index.html');
+  res.sendFile(indexHtmlPath, (err) => {
+    if (err) {
+      console.error('Error sending index.html:', err);
+      res.status(err.status).end();
+    }
+  });
+});
+
 const pleasingColors = [
   '#FF6347', // tomato
   '#6495ED', // cornflowerblue
@@ -43,14 +70,6 @@ let gameState = JSON.parse(JSON.stringify(initialGameState));
 
 // Variable to track the next available player ID
 let nextPlayerId = 2; // Start from 1 since 'player0' is already in the state
-
-// === Serve React Frontend ===
-const buildPath = path.join(__dirname, '..', 'client', 'build');
-app.use(express.static(buildPath));
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(buildPath, 'index.html'));
-});
 
 // === WebSocket Logic ===
 wss.on('connection', (ws) => {
