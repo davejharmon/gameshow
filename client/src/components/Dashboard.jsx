@@ -16,6 +16,8 @@ const Dashboard = ({ game, setGame, players, send }) => {
     playSound4,
     playSound5,
     playSound6,
+    playCorrect,
+    playIncorrect,
   } = useGameSounds();
 
   // Handle point deduction
@@ -69,23 +71,20 @@ const Dashboard = ({ game, setGame, players, send }) => {
       <h1>Dashboard</h1>
       {showSoundboard && (
         <div className={styles.soundboard}>
-          <button className={styles.longButton} onClick={playSound1}>
-            🟥
+          <button className={styles.longButton} onClick={playIncorrect}>
+            🟥 Wrong
           </button>
-          <button className={styles.longButton} onClick={playSound2}>
-            🟧
-          </button>
-          <button className={styles.longButton} onClick={playSound4}>
-            🟩
+          <button className={styles.longButton} onClick={playCorrect}>
+            🟩 Correct
           </button>
           <button className={styles.longButton} onClick={playSound3}>
-            🟨
+            🟨 Chime
           </button>
           <button className={styles.longButton} onClick={playSound5}>
-            🟦
+            🟦 Sting
           </button>
           <button className={styles.longButton} onClick={playSound6}>
-            🟪
+            🟪 Vroom
           </button>
         </div>
       )}
