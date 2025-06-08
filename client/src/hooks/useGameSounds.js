@@ -1,16 +1,21 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
-function createAudioWithFallback(basePath) {
+function createAudioPlayer(variantPaths) {
   return () => {
-    const audio = new Audio(`${basePath}.mp3`);
+    if (!variantPaths || variantPaths.length === 0) {
+      console.warn('No audio variants available');
+      return;
+    }
+
+    const randomSrc =
+      variantPaths[Math.floor(Math.random() * variantPaths.length)];
+    console.log(`Playing sound: ${randomSrc}`);
+    const audio = new Audio(randomSrc);
 
     audio.addEventListener(
       'error',
-      (e) => {
-        console.log(`MP3 not found for ${basePath}. Falling back to WAV.`);
-        audio.src = `${basePath}.wav`;
-        audio.load();
-        audio.play().catch(console.warn);
+      () => {
+        console.warn(`Error loading sound: ${randomSrc}`);
       },
       { once: true }
     );
@@ -20,21 +25,45 @@ function createAudioWithFallback(basePath) {
 }
 
 export function useGameSounds() {
-  const sounds = useMemo(
-    () => ({
-      playBuzz: createAudioWithFallback('/sounds/buzzer'),
-      playIncorrect: createAudioWithFallback('/sounds/incorrect'),
-      playCorrect: createAudioWithFallback('/sounds/correct'),
-      playWin: createAudioWithFallback('/sounds/win'),
-      playSound1: createAudioWithFallback('/sounds/sound1'),
-      playSound2: createAudioWithFallback('/sounds/sound2'),
-      playSound3: createAudioWithFallback('/sounds/sound3'),
-      playSound4: createAudioWithFallback('/sounds/sound4'),
-      playSound5: createAudioWithFallback('/sounds/sound5'),
-      playSound6: createAudioWithFallback('/sounds/sound6'),
-    }),
-    []
-  );
+  const [soundMap, setSoundMap] = useState({});
 
-  return sounds;
+  useEffect(() => {
+    fetch('/sounds/manifest.json')
+      .then((res) => res.json())
+      .then((manifest) => {
+        const newMap = {};
+
+        for (const [key, files] of Object.entries(manifest)) {
+          newMap[key] = files.map((filename) => `/sounds/${key}/${filename}`);
+        }
+
+        setSoundMap(newMap);
+      })
+      .catch((err) => {
+        console.error('Failed to load sound manifest:', err);
+      });
+  }, []);
+
+  const play = useMemo(() => {
+    return (key) => {
+      const variants = soundMap[key];
+      if (!variants) {
+        console.warn(`No sound variants found for key: ${key}`);
+        return;
+      }
+      createAudioPlayer(variants)();
+    };
+  }, [soundMap]);
+
+  const playFile = (filePath) => {
+    if (!filePath) {
+      console.warn('No file path provided to playFile');
+      return;
+    }
+    console.log(`Playing file: ${filePath}`);
+    const audio = new Audio(filePath);
+    audio.play().catch(console.warn);
+  };
+
+  return { play, playFile };
 }

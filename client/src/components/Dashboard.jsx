@@ -4,21 +4,35 @@ import styles from './css/Dashboard.module.css';
 import PlayerRow from './PlayerRow';
 import { useGameSounds } from '../hooks/useGameSounds'; // Make sure the path is correct
 import Timer from './Timer';
+import SoundboardButton from './SoundboardButton';
 
 const Dashboard = ({ game, setGame, players, send }) => {
   const [showSettings, setShowSettings] = useState(false);
   const [showSoundboard, setShowSoundboard] = useState(true);
   const [showTimer, setShowTimer] = useState(true);
-  const {
-    playSound1,
-    playSound2,
-    playSound3,
-    playSound4,
-    playSound5,
-    playSound6,
-    playCorrect,
-    playIncorrect,
-  } = useGameSounds();
+  const [buzzerOptions, setBuzzerOptions] = useState([]);
+  const [soundboardOptions, setSoundboardOptions] = useState([]);
+
+  useEffect(() => {
+    fetch('/sounds/manifest.json')
+      .then((res) => res.json())
+      .then((data) => {
+        // Set buzzerOptions as keys of data (like categories)
+        setBuzzerOptions(Object.keys(data));
+
+        // Set soundboardOptions from the soundboard key if it exists
+        if (data.soundboard && Array.isArray(data.soundboard)) {
+          setSoundboardOptions(data.soundboard);
+        } else {
+          setSoundboardOptions([]);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load sound manifest:', err);
+        setBuzzerOptions([]);
+        setSoundboardOptions([]);
+      });
+  }, []);
 
   // Handle point deduction
   const handleDeductPoint = (playerId) => {
@@ -65,29 +79,22 @@ const Dashboard = ({ game, setGame, players, send }) => {
 
   const allArmed = players.every((p) => p.isArmed);
   const allDisarmed = players.every((p) => !p.isArmed);
-  console.log(game);
   return (
     <div className={styles.screen}>
       <h1>Dashboard</h1>
       {showSoundboard && (
         <div className={styles.soundboard}>
-          <button className={styles.longButton} onClick={playIncorrect}>
-            🟥 Wrong
-          </button>
-          <button className={styles.longButton} onClick={playCorrect}>
-            🟩 Correct
-          </button>
-          <button className={styles.longButton} onClick={playSound3}>
-            🟨 Chime
-          </button>
-          <button className={styles.longButton} onClick={playSound5}>
-            🟦 Sting
-          </button>
-          <button className={styles.longButton} onClick={playSound6}>
-            🟪 Vroom
-          </button>
+          {soundboardOptions.map((soundName, idx) => (
+            <SoundboardButton
+              key={idx}
+              initialSoundName={soundName}
+              showSettings={showSettings}
+              soundOptions={soundboardOptions} // pass soundboard options
+            />
+          ))}
         </div>
       )}
+
       {players.map((player) => (
         <PlayerRow
           key={player.id}
@@ -100,6 +107,7 @@ const Dashboard = ({ game, setGame, players, send }) => {
           handleDelete={handleDelete}
           send={send}
           showSettings={showSettings}
+          buzzerOptions={buzzerOptions} // ✅ new prop
         />
       ))}
 

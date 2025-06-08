@@ -53,6 +53,7 @@ const initialGameState = {
       color: pleasingColors[0],
       score: 0,
       isArmed: false,
+      buzzer: 'buzzer',
     },
   ],
   pointsToAdd: 10,
@@ -148,6 +149,9 @@ wss.on('connection', (ws) => {
       case 'incrementResetCount':
         handleIncrementResetCount();
         break;
+      case 'setPlayerBuzzer':
+        handleSetPlayerBuzzer(payload);
+        break;
       default:
         console.warn('Unknown message type:', type);
     }
@@ -176,6 +180,35 @@ function sendGameState(ws) {
       },
     })
   );
+}
+
+function handleSetPlayerBuzzer(payload) {
+  const { id, buzzer } = payload;
+
+  if (typeof id !== 'string' || typeof buzzer !== 'string') {
+    console.error('Invalid player ID or buzzer:', payload);
+    return;
+  }
+
+  const player = gameState.players.find((p) => p.id === id);
+
+  if (!player) {
+    console.warn(`Player with ID "${id}" not found.`);
+    return;
+  }
+
+  player.buzzer = buzzer;
+
+  broadcast({
+    type: 'playerBuzzerUpdated',
+    payload: {
+      id,
+      buzzer,
+      players: gameState.players,
+    },
+  });
+
+  console.log(`Player ${id}'s buzzer updated to "${buzzer}"`);
 }
 
 function handleSetTimerDuration(payload) {
@@ -270,6 +303,7 @@ function handleAddPlayer() {
     color: pleasingColors[nextPlayerId % pleasingColors.length],
     score: 0,
     isArmed: false,
+    buzzer: 'buzzer',
   };
 
   gameState.players.push(newPlayer);

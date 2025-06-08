@@ -1,0 +1,15 @@
+{
+  "buzzer": ["buzzer.wav", "buzzOne.mp3", "BuzzTwo.mp3", "BuzzThree.mp3"],
+  "incorrect": ["incorrect.wav", "incorrect.mp3"],
+  "correct": ["correct.mp3"],
+  "dave": ["dave2.mp3", "dave3.mp3"],
+  "demi": ["demi1.mp3", "demi2.mp3", "demi3.wav", "demi4.wav"],
+  "soundboard": [
+    "sound1.wav",
+    "sound2.wav",
+    "sound3.wav",
+    "sound4.wav",
+    "sound5.wav",
+    "sound6.wav"
+  ]
+}
